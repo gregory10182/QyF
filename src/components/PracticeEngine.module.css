@@ -1,0 +1,225 @@
+.wrapper {
+  max-width: 640px;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.topBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.topRight {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.back {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  transition: color 0.15s;
+}
+
+.back:hover { color: var(--text); }
+
+.badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: 0.25rem;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+}
+
+.score {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  padding: 2rem;
+}
+
+.question {
+  font-size: 1.15rem;
+  font-weight: 600;
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  text-align: left;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  padding: 0.85rem 1.15rem;
+  font-size: 0.95rem;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.option:hover:not(:disabled) { border-color: #444; }
+.option:disabled { cursor: default; }
+
+.selected { border-color: #fff; background: rgba(255, 255, 255, 0.04); }
+.correct { border-color: var(--green); background: rgba(34, 197, 94, 0.06); }
+.incorrect { border-color: var(--red); background: rgba(239, 68, 68, 0.06); }
+
+.letter {
+  font-weight: 700;
+  color: var(--text-dim);
+  min-width: 1.5rem;
+}
+
+.selected .letter { color: #fff; }
+.correct .letter { color: var(--green); }
+.incorrect .letter { color: var(--red); }
+
+.optText { flex: 1; }
+
+.submitBtn {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  border: none;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: #fff;
+  color: #000;
+  transition: opacity 0.15s;
+}
+
+.submitBtn:hover:not(:disabled) { opacity: 0.85; }
+.submitBtn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+.feedback {
+  margin-top: 1rem;
+  padding: 1.25rem;
+  border-radius: 0.5rem;
+  animation: fadeIn 0.3s ease;
+}
+
+.fbOk {
+  background: rgba(34, 197, 94, 0.06);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.fbErr {
+  background: rgba(239, 68, 68, 0.06);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.fbTitle {
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.fbOk .fbTitle { color: var(--green); }
+.fbErr .fbTitle { color: var(--red); }
+
+.explanation { line-height: 1.6; font-size: 0.9rem; margin-bottom: 1rem; }
+
+.overrideBtn {
+  padding: 0.4rem 0.8rem;
+  border-radius: 0.4rem;
+  border: 1px solid var(--text-dim);
+  background: transparent;
+  color: var(--text-dim);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  margin-bottom: 0.5rem;
+}
+
+.overrideBtn:hover {
+  border-color: var(--text);
+  color: var(--text);
+}
+
+.overrideNote {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  font-style: italic;
+  margin-bottom: 0.5rem;
+}
+
+.nextBtn {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  border: none;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: #fff;
+  color: #000;
+  transition: opacity 0.15s;
+}
+
+.nextBtn:hover { opacity: 0.85; }
+
+.loader {
+  border: 2px solid var(--border);
+  border-top: 2px solid #fff;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  animation: spin 0.6s linear infinite;
+  margin: 0 auto 0.75rem;
+}
+
+.loadingText { color: var(--text-dim); text-align: center; font-size: 0.9rem; }
+
+.errorBox {
+  text-align: center;
+  padding: 2rem;
+  background: rgba(239, 68, 68, 0.06);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 0.5rem;
+}
+
+.errorBox p { color: var(--red); margin-bottom: 1rem; }
+
+.retryBtn {
+  padding: 0.5rem 1.25rem;
+  border-radius: 0.4rem;
+  border: none;
+  background: var(--red);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}

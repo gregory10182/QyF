@@ -1,5 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import 'katex/dist/katex.min.css';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -12,13 +13,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "PharmaStudy - Ejercicios de Química y Farmacia",
-  description: "Plataforma de generación de ejercicios de Química y Farmacia usando Inteligencia Artificial.",
+  title: "QyF PF — Química y Farmacia",
+  description: "Practica nomenclatura y reacciones para Química y Farmacia USACH.",
 };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
+    <html lang="es" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body>{children}</body>
     </html>
   );
