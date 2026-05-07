@@ -1,6 +1,6 @@
 import Groq from 'groq-sdk';
 
-export async function callGroq(prompt, model = 'llama-3.3-70b-versatile', retries = 2) {
+export async function callGroq(prompt, model = 'qwen/qwen3-32b', retries = 2) {
   const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {

@@ -113,6 +113,7 @@ export default function NomenclatureEngine({ slug, subjectName, subtopicSlug, su
       setExercise(queue[0]);
       setQueue(prev => prev.slice(1));
     } else {
+      setExercise(null);
       setFetching(true);
       try {
         const exercises = await fetchBatch();
@@ -127,6 +128,19 @@ export default function NomenclatureEngine({ slug, subjectName, subtopicSlug, su
       }
     }
   };
+
+  useEffect(() => {
+    if (queue.length === 1 && exercise && !fetching && !fetchingRef.current) {
+      fetchingRef.current = true;
+      fetchBatch().then(exercises => {
+        if (exercises?.length) {
+          setQueue(prev => [...prev, ...exercises]);
+        }
+      }).catch(() => {}).finally(() => {
+        fetchingRef.current = false;
+      });
+    }
+  }, [queue.length]);
 
   const retry = async () => {
     setFetching(true);

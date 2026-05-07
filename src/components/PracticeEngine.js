@@ -89,6 +89,7 @@ export default function PracticeEngine({ slug, subjectName, subtopicSlug, subtop
       setExercise(queue[0]);
       setQueue(prev => prev.slice(1));
     } else {
+      setExercise(null);
       setFetching(true);
       try {
         const exercises = await fetchBatch();
@@ -103,6 +104,19 @@ export default function PracticeEngine({ slug, subjectName, subtopicSlug, subtop
       }
     }
   };
+
+  useEffect(() => {
+    if (queue.length === 1 && exercise && !fetching && !fetchingRef.current) {
+      fetchingRef.current = true;
+      fetchBatch().then(exercises => {
+        if (exercises?.length) {
+          setQueue(prev => [...prev, ...exercises]);
+        }
+      }).catch(() => {}).finally(() => {
+        fetchingRef.current = false;
+      });
+    }
+  }, [queue.length]);
 
   const retry = async () => {
     setFetching(true);
