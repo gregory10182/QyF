@@ -243,18 +243,6 @@
 
 .nextBtn:hover { opacity: 0.85; }
 
-.loader {
-  border: 2px solid var(--border);
-  border-top: 2px solid #fff;
-  border-radius: 50%;
-  width: 28px;
-  height: 28px;
-  animation: spin 0.6s linear infinite;
-  margin: 0 auto 0.75rem;
-}
-
-.loadingText { color: var(--text-dim); text-align: center; font-size: 0.9rem; }
-
 .errorBox {
   text-align: center;
   padding: 2rem;
@@ -275,11 +263,35 @@
   cursor: pointer;
 }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+.skeletonTopBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.skeletonCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+}
+
+@media (min-width: 480px) {
+  .skeletonCard {
+    padding: 2rem;
+  }
+}
+
+.skeletonOption {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.6rem;
 }

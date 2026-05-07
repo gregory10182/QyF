@@ -12,7 +12,7 @@ import { useScore } from '@/lib/useScore';
 export default function NomenclatureEngine({ slug, subjectName, subtopicSlug, subtopicName }) {
   const [exercise, setExercise] = useState(null);
   const [queue, setQueue] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [fetching, setFetching] = useState(false);
   const [error, setError] = useState(null);
   const [userAnswer, setUserAnswer] = useState('');
   const [submitted, setSubmitted] = useState(false);
@@ -57,7 +57,7 @@ export default function NomenclatureEngine({ slug, subjectName, subtopicSlug, su
     if (!initRef.current || fetchingRef.current) return;
     const init = async () => {
       fetchingRef.current = true;
-      setLoading(true);
+      setFetching(true);
       setError(null);
       try {
         const exercises = await fetchBatch(direction);
@@ -68,8 +68,8 @@ export default function NomenclatureEngine({ slug, subjectName, subtopicSlug, su
         initRef.current = false;
       } catch (err) {
         setError(err.message);
-      } finally {
-        setLoading(false);
+} finally {
+        setFetching(false);
         fetchingRef.current = false;
       }
     };
@@ -82,7 +82,7 @@ export default function NomenclatureEngine({ slug, subjectName, subtopicSlug, su
     setSubmitted(false);
     setCorrect(false);
     setExercise(null);
-    setLoading(true);
+    setFetching(true);
     setError(null);
     try {
       const exercises = await fetchBatch(newDir);
@@ -93,7 +93,7 @@ export default function NomenclatureEngine({ slug, subjectName, subtopicSlug, su
     } catch (err) {
       setError(err.message);
     } finally {
-      setLoading(false);
+      setFetching(false);
     }
   };
 
@@ -113,7 +113,7 @@ export default function NomenclatureEngine({ slug, subjectName, subtopicSlug, su
       setExercise(queue[0]);
       setQueue(prev => prev.slice(1));
     } else {
-      setLoading(true);
+      setFetching(true);
       try {
         const exercises = await fetchBatch();
         if (exercises?.length) {
@@ -123,13 +123,13 @@ export default function NomenclatureEngine({ slug, subjectName, subtopicSlug, su
       } catch (err) {
         setError(err.message);
       } finally {
-        setLoading(false);
+        setFetching(false);
       }
     }
   };
 
   const retry = async () => {
-    setLoading(true);
+    setFetching(true);
     setError(null);
     try {
       const exercises = await fetchBatch();
@@ -140,17 +140,35 @@ export default function NomenclatureEngine({ slug, subjectName, subtopicSlug, su
     } catch (err) {
       setError(err.message);
     } finally {
-      setLoading(false);
+      setFetching(false);
     }
   };
 
-  if (!exercise) return null;
+  const isLoading = !exercise && !error;
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className={styles.wrapper}>
-        <div className={styles.loader} />
-        <p className={styles.loadingText}>Generando ejercicio...</p>
+        <div className={styles.skeletonTopBar}>
+          <div className="skeleton" style={{ width: '7rem', height: '0.85rem' }} />
+          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+            <div className="skeleton" style={{ width: '4rem', height: '1.4rem', borderRadius: '0.25rem' }} />
+            <div className="skeleton" style={{ width: '2rem', height: '0.8rem' }} />
+          </div>
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '0.4rem' }}>
+          <div className="skeleton" style={{ width: '4rem', height: '2rem', borderRadius: '0.5rem' }} />
+          <div className="skeleton" style={{ width: '6.5rem', height: '2rem', borderRadius: '0.5rem' }} />
+          <div className="skeleton" style={{ width: '6.5rem', height: '2rem', borderRadius: '0.5rem' }} />
+        </div>
+        <div className={styles.skeletonCard}>
+          <div className="skeleton" style={{ width: '40%', height: '0.8rem', marginBottom: '1rem' }} />
+          <div className="skeleton" style={{ width: '70%', height: '1.25rem', marginBottom: '1.5rem' }} />
+          <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <div className="skeleton" style={{ flex: 1, height: '2.75rem', borderRadius: '0.5rem' }} />
+            <div className="skeleton" style={{ width: '6rem', height: '2.75rem', borderRadius: '0.5rem' }} />
+          </div>
+        </div>
       </div>
     );
   }
@@ -165,8 +183,6 @@ export default function NomenclatureEngine({ slug, subjectName, subtopicSlug, su
       </div>
     );
   }
-
-  if (!exercise) return null;
 
   return (
     <div className={styles.wrapper}>

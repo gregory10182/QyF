@@ -276,17 +276,24 @@
 
 .explanation { line-height: 1.6; font-size: 0.9rem; }
 
-.loader {
-  border: 2px solid var(--border);
-  border-top: 2px solid var(--cyan);
-  border-radius: 50%;
-  width: 28px;
-  height: 28px;
-  animation: spin 0.6s linear infinite;
-  margin: 0 auto 0.75rem;
+.skeletonTopBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.loadingText { color: var(--text-dim); text-align: center; font-size: 0.9rem; }
+.skeletonCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  padding: 2rem;
+}
+
+@media (max-width: 479px) {
+  .skeletonCard {
+    padding: 1.25rem;
+  }
+}
 
 .errorBox {
   text-align: center;
@@ -306,10 +313,6 @@
   color: white;
   font-weight: 600;
   cursor: pointer;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
 }
 
 @keyframes fadeIn {

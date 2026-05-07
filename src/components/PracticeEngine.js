@@ -11,7 +11,7 @@ import { useScore } from '@/lib/useScore';
 export default function PracticeEngine({ slug, subjectName, subtopicSlug, subtopicName }) {
   const [exercise, setExercise] = useState(null);
   const [queue, setQueue] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [fetching, setFetching] = useState(false);
   const [error, setError] = useState(null);
   const [selected, setSelected] = useState(null);
   const [submitted, setSubmitted] = useState(false);
@@ -54,7 +54,7 @@ export default function PracticeEngine({ slug, subjectName, subtopicSlug, subtop
     if (!initRef.current || fetchingRef.current) return;
     const init = async () => {
       fetchingRef.current = true;
-      setLoading(true);
+      setFetching(true);
       setError(null);
       try {
         const exercises = await fetchBatch();
@@ -66,7 +66,7 @@ export default function PracticeEngine({ slug, subjectName, subtopicSlug, subtop
       } catch (err) {
         setError(err.message);
       } finally {
-        setLoading(false);
+        setFetching(false);
         fetchingRef.current = false;
       }
     };
@@ -89,7 +89,7 @@ export default function PracticeEngine({ slug, subjectName, subtopicSlug, subtop
       setExercise(queue[0]);
       setQueue(prev => prev.slice(1));
     } else {
-      setLoading(true);
+      setFetching(true);
       try {
         const exercises = await fetchBatch();
         if (exercises?.length) {
@@ -99,13 +99,13 @@ export default function PracticeEngine({ slug, subjectName, subtopicSlug, subtop
       } catch (err) {
         setError(err.message);
       } finally {
-        setLoading(false);
+        setFetching(false);
       }
     }
   };
 
   const retry = async () => {
-    setLoading(true);
+    setFetching(true);
     setError(null);
     try {
       const exercises = await fetchBatch();
@@ -116,17 +116,32 @@ export default function PracticeEngine({ slug, subjectName, subtopicSlug, subtop
     } catch (err) {
       setError(err.message);
     } finally {
-      setLoading(false);
+      setFetching(false);
     }
   };
 
-  if (!exercise) return null;
+  const isLoading = !exercise && !error;
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className={styles.wrapper}>
-        <div className={styles.loader} />
-        <p className={styles.loadingText}>Generando ejercicio...</p>
+        <div className={styles.skeletonTopBar}>
+          <div className="skeleton" style={{ width: '6rem', height: '0.85rem' }} />
+          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+            <div className="skeleton" style={{ width: '4rem', height: '1.4rem', borderRadius: '0.25rem' }} />
+            <div className="skeleton" style={{ width: '2rem', height: '0.8rem' }} />
+          </div>
+        </div>
+        <div className={styles.skeletonCard}>
+          <div className="skeleton" style={{ width: '75%', height: '1.15rem', marginBottom: '1.5rem' }} />
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className={styles.skeletonOption}>
+              <div className="skeleton" style={{ width: '1.5rem', height: '1.5rem', borderRadius: '0.25rem', flexShrink: 0 }} />
+              <div className="skeleton" style={{ flex: 1, height: '0.95rem' }} />
+            </div>
+          ))}
+          <div className="skeleton" style={{ width: '100%', height: '2.75rem', marginTop: '0.5rem', borderRadius: '0.5rem' }} />
+        </div>
       </div>
     );
   }
@@ -141,8 +156,6 @@ export default function PracticeEngine({ slug, subjectName, subtopicSlug, subtop
       </div>
     );
   }
-
-  if (!exercise) return null;
 
   return (
     <div className={styles.wrapper}>

@@ -15,7 +15,7 @@ export default function Home() {
         </p>
       </header>
 
-      <Link href="/nomenclatura" className={styles.nomCard}>
+      <Link href="/nomenclatura" className={styles.nomCard} style={{ animationDelay: '0.1s' }}>
         <span className={styles.nomIcon}>🏷️</span>
         <div>
           <h2 className={styles.cardTitle}>Nomenclatura</h2>
@@ -24,14 +24,15 @@ export default function Home() {
         <span className={styles.arrow}>→</span>
       </Link>
 
-      <div className={styles.sectionLabel}>Ejercicios por materia</div>
+      <div className={styles.sectionLabel} style={{ animationDelay: '0.15s' }}>Ejercicios por materia</div>
 
       <div className={styles.grid}>
-        {SUBJECTS.map((subject) => (
+        {SUBJECTS.map((subject, i) => (
           <Link
             key={subject.slug}
             href={`/materia/${subject.slug}`}
             className={styles.card}
+            style={{ animationDelay: `${0.2 + i * 0.06}s` }}
           >
             <span className={styles.icon}>{subject.icon}</span>
             <div>

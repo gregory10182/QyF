@@ -3,6 +3,8 @@
   padding: 3rem 1rem;
   max-width: 720px;
   margin: 0 auto;
+  position: relative;
+  z-index: 1;
 }
 
 @media (min-width: 640px) {
@@ -13,9 +15,17 @@
 
 .header {
   margin-bottom: 3rem;
+  animation: fadeInUp 0.5s ease both;
 }
 
 .logoRow {
+  margin-bottom: 0.5rem;
+}
+
+.title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
   margin-bottom: 0.5rem;
 }
 
@@ -39,7 +49,8 @@
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 0.75rem;
-  transition: all 0.15s ease;
+  transition: all 0.2s ease;
+  animation: fadeInUp 0.5s ease both;
 }
 
 @media (min-width: 640px) {
@@ -51,6 +62,8 @@
 .card:hover {
   background: var(--surface-2);
   border-color: #333;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .icon {
@@ -102,8 +115,9 @@
   background: rgba(6, 182, 212, 0.06);
   border: 1px solid rgba(6, 182, 212, 0.2);
   border-radius: 0.75rem;
-  transition: all 0.15s ease;
+  transition: all 0.2s ease;
   margin-bottom: 2rem;
+  animation: fadeInUp 0.5s ease both;
 }
 
 @media (min-width: 640px) {
@@ -115,6 +129,8 @@
 .nomCard:hover {
   background: rgba(6, 182, 212, 0.1);
   border-color: rgba(6, 182, 212, 0.35);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(6, 182, 212, 0.08);
 }
 
 .nomIcon {
@@ -129,4 +145,5 @@
   letter-spacing: 0.08em;
   color: var(--text-dim);
   margin-bottom: 0.75rem;
+  animation: fadeInUp 0.5s ease both;
 }
