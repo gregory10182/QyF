@@ -1,14 +1,17 @@
 import styles from "./page.module.css";
 import { SUBJECTS, NOMENCLATURE_TOPICS } from "@/data/subjects";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Home() {
   return (
     <div className={styles.page}>
       <header className={styles.header}>
-        <h1 className={styles.title}>QyF PF</h1>
+        <div className={styles.logoRow}>
+          <Image src="/logo.svg" alt="QyF PF" width={150} height={44} priority />
+        </div>
         <p className={styles.subtitle}>
-          Practica para Química y Farmacia USACH.
+          Practica para Química y Farmacia.
         </p>
       </header>
 

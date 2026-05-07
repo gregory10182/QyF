@@ -20,9 +20,10 @@ export const metadata = {
   keywords: ["química", "farmacia", "USACH", "nomenclatura", "reacciones", "ejercicios", "química general", "química orgánica", "bioquímica"],
   robots: { index: true, follow: true },
   alternates: { canonical: SITE_URL },
+  icons: { icon: '/icon.svg' },
   openGraph: {
     title: "QyF PF — Química y Farmacia",
-    description: "Practica nomenclatura y reacciones para Química y Farmacia USACH.",
+description: "Practica nomenclatura y reacciones para Química y Farmacia.",
     url: SITE_URL,
     siteName: "QyF PF",
     locale: "es_CL",
@@ -44,7 +45,7 @@ function WebSiteSchema() {
           "@type": "WebSite",
           name: "QyF PF — Química y Farmacia",
           url: SITE_URL,
-          description: "Practica nomenclatura y reacciones para Química y Farmacia USACH.",
+description: "Practica nomenclatura y reacciones para Química y Farmacia.",
           inLanguage: "es",
         }),
       }}
