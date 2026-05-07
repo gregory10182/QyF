@@ -1,8 +1,14 @@
 .page {
   min-height: 100vh;
-  padding: 4rem 1.5rem;
+  padding: 3rem 1rem;
   max-width: 720px;
   margin: 0 auto;
+}
+
+@media (min-width: 640px) {
+  .page {
+    padding: 4rem 1.5rem;
+  }
 }
 
 .header {
@@ -29,11 +35,17 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-  padding: 1.25rem 1.5rem;
+  padding: 1rem 1.25rem;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 0.75rem;
   transition: all 0.15s ease;
+}
+
+@media (min-width: 640px) {
+  .card {
+    padding: 1.25rem 1.5rem;
+  }
 }
 
 .card:hover {
@@ -86,12 +98,18 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-  padding: 1.25rem 1.5rem;
+  padding: 1rem 1.25rem;
   background: rgba(6, 182, 212, 0.06);
   border: 1px solid rgba(6, 182, 212, 0.2);
   border-radius: 0.75rem;
   transition: all 0.15s ease;
   margin-bottom: 2rem;
+}
+
+@media (min-width: 640px) {
+  .nomCard {
+    padding: 1.25rem 1.5rem;
+  }
 }
 
 .nomCard:hover {
