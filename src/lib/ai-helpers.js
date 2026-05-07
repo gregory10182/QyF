@@ -1,3 +1,27 @@
+import Groq from 'groq-sdk';
+
+export async function callGroq(prompt, model = 'llama-3.3-70b-versatile', retries = 2) {
+  const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      const response = await groq.chat.completions.create({
+        model,
+        messages: [{ role: 'user', content: prompt }],
+        response_format: { type: 'json_object' },
+        temperature: 0.5,
+      });
+      return response.choices[0].message.content;
+    } catch (err) {
+      if ((err.status === 429 || err.message?.includes('429')) && attempt < retries) {
+        const delay = Math.pow(2, attempt) * 2000;
+        await new Promise(resolve => setTimeout(resolve, delay));
+        continue;
+      }
+      throw err;
+    }
+  }
+}
+
 const LATEX_COMMANDS = [
   'text', 'mathrm', 'left', 'right', 'frac', 'sqrt',
   'rightarrow', 'leftarrow', 'Rightarrow', 'Leftarrow',

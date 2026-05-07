@@ -1,28 +1,5 @@
-import Groq from 'groq-sdk';
-import { NextResponse } from 'next/server';
 import { SUBJECTS } from '@/data/subjects';
-import { sanitizeAIResponse } from '@/lib/ai-helpers';
-
-async function callGroq(groq, prompt, model, retries = 2) {
-  for (let attempt = 0; attempt <= retries; attempt++) {
-    try {
-      const response = await groq.chat.completions.create({
-        model,
-        messages: [{ role: 'user', content: prompt }],
-        response_format: { type: 'json_object' },
-        temperature: 0.5,
-      });
-      return response.choices[0].message.content;
-    } catch (err) {
-      if ((err.status === 429 || err.message?.includes('429')) && attempt < retries) {
-        const delay = Math.pow(2, attempt) * 2000;
-        await new Promise(resolve => setTimeout(resolve, delay));
-        continue;
-      }
-      throw err;
-    }
-  }
-}
+import { callGroq, sanitizeAIResponse } from '@/lib/ai-helpers';
 
 function validateExercises(data) {
   if (!data?.exercises || !Array.isArray(data.exercises)) return [];
@@ -41,16 +18,26 @@ function validateExercises(data) {
 
 export async function POST(request) {
   try {
-    const { subject, subtopic, previousQuestions } = await request.json();
+    let body;
+    try {
+      body = await request.json();
+    } catch {
+      return Response.json({ error: 'Cuerpo de la petición inválido.' }, { status: 400 });
+    }
 
+    const { subject, subtopic, previousQuestions } = body;
+    if (!subject || typeof subject !== 'string' || !subtopic || typeof subtopic !== 'string') {
+      return Response.json({ error: 'Los campos "subject" y "subtopic" son obligatorios.' }, { status: 400 });
+    }
+    if (previousQuestions && !Array.isArray(previousQuestions)) {
+      return Response.json({ error: '"previousQuestions" debe ser un arreglo.' }, { status: 400 });
+    }
     if (!process.env.GROQ_API_KEY) {
-      return NextResponse.json(
+      return Response.json(
         { error: 'La API key de Groq no está configurada.' },
         { status: 500 }
       );
     }
-
-    const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
     const subjectData = SUBJECTS.find(s => s.slug === subject);
     const subtopicData = subjectData?.subtopics.find(s => s.slug === subtopic);
@@ -99,20 +86,20 @@ Responde SOLO con JSON válido, sin markdown ni backticks:
   ]
 }`;
 
-    const rawText = await callGroq(groq, prompt, 'llama-3.3-70b-versatile');
+    const rawText = await callGroq(prompt);
     const data = sanitizeAIResponse(rawText);
     const exercises = validateExercises(data);
-    return NextResponse.json({ exercises });
+    return Response.json({ exercises });
 
   } catch (error) {
     console.error('Error generating exercise:', error);
     if (error.message?.includes('429') || error.status === 429) {
-      return NextResponse.json(
+      return Response.json(
         { error: 'Demasiadas peticiones. Espera unos segundos e intenta de nuevo.' },
         { status: 429 }
       );
     }
-    return NextResponse.json(
+    return Response.json(
       { error: 'Error al generar el ejercicio.' },
       { status: 500 }
     );
