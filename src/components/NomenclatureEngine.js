@@ -7,6 +7,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import { fuzzyMatch } from '@/lib/match';
+import { useScore } from '@/lib/useScore';
 
 export default function NomenclatureEngine({ slug, subjectName, subtopicSlug, subtopicName }) {
   const [exercise, setExercise] = useState(null);
@@ -16,8 +17,8 @@ export default function NomenclatureEngine({ slug, subjectName, subtopicSlug, su
   const [userAnswer, setUserAnswer] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [correct, setCorrect] = useState(false);
-  const [overridden, setOverridden] = useState(false);
   const [direction, setDirection] = useState('mixed');
+  const { score, streak, bestStreak, accuracy, recordAnswer } = useScore(`qyf-nomen-${slug}-${subtopicSlug}`);
   const askedRef = useRef(new Set());
 
   const initRef = useRef(true);
@@ -26,7 +27,7 @@ export default function NomenclatureEngine({ slug, subjectName, subtopicSlug, su
   const addAsked = (exercises) => {
     const newOnes = [];
     for (const ex of exercises) {
-      const key = (ex.question || '').slice(0, 80).toLowerCase();
+      const key = (ex.question || '').slice(0, 120).toLowerCase();
       if (!askedRef.current.has(key)) {
         newOnes.push(ex);
         askedRef.current.add(key);
@@ -36,7 +37,7 @@ export default function NomenclatureEngine({ slug, subjectName, subtopicSlug, su
   };
 
   const fetchBatch = async (dir) => {
-    const previousQuestions = Array.from(askedRef.current).slice(-15);
+    const previousQuestions = Array.from(askedRef.current).slice(-25);
     const res = await fetch('/api/nomenclature', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -76,11 +77,10 @@ export default function NomenclatureEngine({ slug, subjectName, subtopicSlug, su
   }, [slug, subtopicSlug]);
 
   const changeDirection = async (newDir) => {
-setDirection(newDir);
+    setDirection(newDir);
     setUserAnswer('');
     setSubmitted(false);
     setCorrect(false);
-    setOverridden(false);
     setExercise(null);
     setLoading(true);
     setError(null);
@@ -101,6 +101,7 @@ setDirection(newDir);
     if (!userAnswer.trim()) return;
     const ok = fuzzyMatch(userAnswer, exercise.acceptableAnswers);
     setCorrect(ok);
+    recordAnswer(ok);
     setSubmitted(true);
   };
 
@@ -108,7 +109,6 @@ setDirection(newDir);
     setUserAnswer('');
     setSubmitted(false);
     setCorrect(false);
-    setOverridden(false);
     if (queue.length > 0) {
       setExercise(queue[0]);
       setQueue(prev => prev.slice(1));
@@ -144,6 +144,8 @@ setDirection(newDir);
     }
   };
 
+  if (!exercise) return null;
+
   if (loading) {
     return (
       <div className={styles.wrapper}>
@@ -170,8 +172,21 @@ setDirection(newDir);
     <div className={styles.wrapper}>
       <div className={styles.topBar}>
         <Link href="/nomenclatura" className={styles.back}>← Nomenclatura</Link>
-        <span className={styles.badge}>{subtopicName}</span>
+        <div className={styles.stats}>
+          <span className={styles.badge}>{subtopicName}</span>
+          <span className={styles.streak}>{streak > 0 ? `🔥 ${streak}` : ''}</span>
+          <span className={styles.score}>{score.right}/{score.total}</span>
+          {score.total > 0 && <span className={styles.accuracy}>{accuracy}%</span>}
+        </div>
       </div>
+
+      <h1 className="sr-only">{subtopicName} — Nomenclatura</h1>
+
+      {score.total > 0 && (
+        <div className={styles.progressBar}>
+          <div className={styles.progressFill} style={{ width: `${accuracy}%` }} />
+        </div>
+      )}
 
       <div className={styles.directionRow}>
         {[
@@ -222,20 +237,15 @@ setDirection(newDir);
 
         {submitted && (
           <div className={`${styles.feedback} ${correct ? styles.fbOk : styles.fbErr}`}>
-            <p className={styles.fbTitle}>{correct || overridden ? 'Correcto' : 'Incorrecto'}</p>
-            {overridden && !correct && <p className={styles.overrideNote}>Marcado como correcto por el estudiante</p>}
-            {!correct && !overridden && (
+            <p className={styles.fbTitle}>{correct ? '¡Correcto!' : 'Incorrecto'}</p>
+            {streak > 1 && correct && <p className={styles.streakMsg}>🔥 ¡{streak} seguidas!</p>}
+            {!correct && (
               <div className={styles.answerBox}>
                 <strong>Respuesta:</strong>
                 <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>
                   {exercise.displayAnswer}
                 </ReactMarkdown>
               </div>
-            )}
-            {!correct && !overridden && (
-              <button onClick={() => { setCorrect(true); setOverridden(true); }} className={styles.overrideBtn}>
-                Yo tenía razón
-              </button>
             )}
             <div className={styles.explanation}>
               <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>

@@ -68,7 +68,7 @@ VERIFICACIÓN: Antes de escribir cada ejercicio, piensa internamente:
 3. ¿Las otras opciones son incorrectas pero plausibles?
 Solo escribe el ejercicio si estás 100% seguro de la respuesta correcta.
 
-${previousQuestions?.length ? `PREGUNTAS YA REALIZADAS (NO repitas, genera preguntas sobre conceptos DIFERENTES):\n${previousQuestions.map((q, i) => `${i + 1}. ${q}`).join('\n')}\n` : ''}
+${previousQuestions?.length ? `PREGUNTAS YA REALIZADAS (NO repitas, genera preguntas sobre conceptos DIFERENTES y enfoques distintos):\n${previousQuestions.map((q, i) => `${i + 1}. ${q}`).join('\n')}\n\nVARIEDAD: Aborda el tema desde ángulos distintos cada vez. Evita preguntas muy similares entre sí o las más obvias del tema. Varía la dificultad y el tipo de razonamiento requerido.` : 'VARIEDAD: No generes las preguntas más obvias del tema. Varía el enfoque, la dificultad y el tipo de razonamiento cada vez.'}
 Responde SOLO con JSON válido, sin markdown ni backticks:
 {
   "exercises": [

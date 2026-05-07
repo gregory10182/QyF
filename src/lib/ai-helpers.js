@@ -8,7 +8,7 @@ export async function callGroq(prompt, model = 'llama-3.3-70b-versatile', retrie
         model,
         messages: [{ role: 'user', content: prompt }],
         response_format: { type: 'json_object' },
-        temperature: 0.5,
+        temperature: 0.7,
       });
       return response.choices[0].message.content;
     } catch (err) {

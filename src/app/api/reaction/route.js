@@ -90,7 +90,7 @@ VERIFICACIÓN: Antes de escribir cada ejercicio:
 3. ¿Los productos en acceptableAnswers son los correctos? Verifica.
 Solo escribe el ejercicio si estás 100% seguro de la respuesta.
 
-${previousQuestions?.length ? `NO repitas estas preguntas (genera sobre conceptos DIFERENTES):\n${previousQuestions.map((q, i) => `${i + 1}. ${q}`).join('\n')}\n` : ''}
+${previousQuestions?.length ? `PREGUNTAS YA REALIZADAS (NO repitas, genera sobre conceptos DIFERENTES y reacciones distintas):\n${previousQuestions.map((q, i) => `${i + 1}. ${q}`).join('\n')}\n\nVARIEDAD: Varía los tipos de reacción, los reactivos, los mecanismos y el nivel de dificultad. Evita los ejemplos más obvios del tema.` : 'VARIEDAD: No generes las reacciones más obvias del tema. Varía los reactivos, mecanismos y nivel de dificultad cada vez.'}
 Responde SOLO con JSON válido, sin markdown ni backticks:
 {
   "exercises": [

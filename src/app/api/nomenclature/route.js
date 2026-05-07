@@ -77,7 +77,7 @@ VERIFICACIÓN: Para cada ejercicio, antes de escribirlo:
 3. ¿Las respuestas en "acceptableAnswers" cubren las formas comunes de escribirlo?
 Solo escribe el ejercicio si estás 100% seguro del nombre y la fórmula.
 
-${previousQuestions?.length ? `NO repitas estos compuestos (usa compuestos DIFERENTES):\n${previousQuestions.map((q, i) => `${i + 1}. ${q}`).join('\n')}\n` : ''}
+${previousQuestions?.length ? `PREGUNTAS YA REALIZADAS (NO repitas estos compuestos, usa compuestos DIFERENTES y escenarios DIFERENTES):\n${previousQuestions.map((q, i) => `${i + 1}. ${q}`).join('\n')}\n\nVARIEDAD: Elige compuestos MENOS comunes. Evita los ejemplos más obvios o típicos de los libros de texto. Varía el número de oxidación, el tipo de compuesto, y el nivel de dificultad cada vez.` : 'VARIEDAD: No generes los ejemplos más obvios o típicos. Varía el tipo de compuesto, número de oxidación y nivel de dificultad cada vez.'}
 Responde SOLO con JSON válido, sin markdown ni backticks:
 {
   "exercises": [

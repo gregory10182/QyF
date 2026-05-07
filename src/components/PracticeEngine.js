@@ -6,6 +6,7 @@ import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
+import { useScore } from '@/lib/useScore';
 
 export default function PracticeEngine({ slug, subjectName, subtopicSlug, subtopicName }) {
   const [exercise, setExercise] = useState(null);
@@ -15,8 +16,7 @@ export default function PracticeEngine({ slug, subjectName, subtopicSlug, subtop
   const [selected, setSelected] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [correct, setCorrect] = useState(false);
-  const [overridden, setOverridden] = useState(false);
-  const [score, setScore] = useState({ right: 0, total: 0 });
+  const { score, streak, bestStreak, accuracy, recordAnswer } = useScore(`qyf-practice-${slug}-${subtopicSlug}`);
   const askedRef = useRef(new Set());
 
   const initRef = useRef(true);
@@ -25,7 +25,7 @@ export default function PracticeEngine({ slug, subjectName, subtopicSlug, subtop
   const addAsked = (exercises) => {
     const newOnes = [];
     for (const ex of exercises) {
-      const key = (ex.question || '').slice(0, 80).toLowerCase();
+      const key = (ex.question || '').slice(0, 120).toLowerCase();
       if (!askedRef.current.has(key)) {
         newOnes.push(ex);
         askedRef.current.add(key);
@@ -35,7 +35,7 @@ export default function PracticeEngine({ slug, subjectName, subtopicSlug, subtop
   };
 
   const fetchBatch = async () => {
-    const previousQuestions = Array.from(askedRef.current).slice(-15);
+    const previousQuestions = Array.from(askedRef.current).slice(-25);
     const res = await fetch('/api/exercise', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -77,20 +77,14 @@ export default function PracticeEngine({ slug, subjectName, subtopicSlug, subtop
     if (!selected) return;
     const ok = selected === exercise.correctOptionId;
     setCorrect(ok);
-    setScore(prev => ({ right: prev.right + (ok ? 1 : 0), total: prev.total + 1 }));
+    recordAnswer(ok);
     setSubmitted(true);
-  };
-
-  const overrideCorrect = () => {
-    setCorrect(true);
-    setOverridden(true);
   };
 
   const next = async () => {
     setSelected(null);
     setSubmitted(false);
     setCorrect(false);
-    setOverridden(false);
     if (queue.length > 0) {
       setExercise(queue[0]);
       setQueue(prev => prev.slice(1));
@@ -126,6 +120,8 @@ export default function PracticeEngine({ slug, subjectName, subtopicSlug, subtop
     }
   };
 
+  if (!exercise) return null;
+
   if (loading) {
     return (
       <div className={styles.wrapper}>
@@ -150,13 +146,22 @@ export default function PracticeEngine({ slug, subjectName, subtopicSlug, subtop
 
   return (
     <div className={styles.wrapper}>
+      <h1 className="sr-only">{subtopicName} — {subjectName}</h1>
       <div className={styles.topBar}>
         <Link href={`/materia/${slug}`} className={styles.back}>← {subjectName}</Link>
-        <div className={styles.topRight}>
+        <div className={styles.stats}>
           <span className={styles.badge}>{subtopicName}</span>
+          <span className={styles.streak}>{streak > 0 ? `🔥 ${streak}` : ''}</span>
           <span className={styles.score}>{score.right}/{score.total}</span>
+          {score.total > 0 && <span className={styles.accuracy}>{accuracy}%</span>}
         </div>
       </div>
+
+      {score.total > 0 && (
+        <div className={styles.progressBar}>
+          <div className={styles.progressFill} style={{ width: `${accuracy}%` }} />
+        </div>
+      )}
 
       <div className={styles.card}>
         <div className={styles.question}>
@@ -196,12 +201,15 @@ export default function PracticeEngine({ slug, subjectName, subtopicSlug, subtop
           </button>
         ) : (
           <div className={`${styles.feedback} ${correct ? styles.fbOk : styles.fbErr}`}>
-            <p className={styles.fbTitle}>{correct || overridden ? 'Correcto' : 'Incorrecto'}</p>
-            {overridden && !correct && <p className={styles.overrideNote}>Marcado como correcto por el estudiante</p>}
-            {!correct && !overridden && (
-              <button onClick={overrideCorrect} className={styles.overrideBtn}>
-                Yo tenía razón
-              </button>
+            <p className={styles.fbTitle}>{correct ? '¡Correcto!' : 'Incorrecto'}</p>
+            {streak > 1 && correct && <p className={styles.streakMsg}>🔥 ¡{streak} seguidas!</p>}
+            {!correct && (
+              <div className={styles.answerBox}>
+                <strong>Respuesta correcta:</strong>
+                <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>
+                  {exercise.options.find(o => o.id === exercise.correctOptionId)?.text}
+                </ReactMarkdown>
+              </div>
             )}
             <div className={styles.explanation}>
               <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>
