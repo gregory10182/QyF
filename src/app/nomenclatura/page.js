@@ -1,10 +1,28 @@
 import Link from 'next/link';
 import { NOMENCLATURE_TOPICS } from '@/data/subjects';
+import BreadcrumbJsonLd from '@/components/BreadcrumbJsonLd';
 import styles from '../page.module.css';
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://qyfpf.cl';
+
+export const metadata = {
+  title: '🏷️ Nomenclatura — QyF PF',
+  description: 'Practica nomenclatura química: nombre → fórmula y fórmula → nombre.',
+  alternates: { canonical: `${SITE_URL}/nomenclatura` },
+  openGraph: {
+    title: '🏷️ Nomenclatura — QyF PF',
+    description: 'Practica nomenclatura química: nombre → fórmula y fórmula → nombre.',
+    url: `${SITE_URL}/nomenclatura`,
+  },
+};
 
 export default function NomenclaturaPage() {
   return (
     <div className={styles.page}>
+      <BreadcrumbJsonLd items={[
+        { name: 'Inicio', url: `${SITE_URL}` },
+        { name: 'Nomenclatura', url: `${SITE_URL}/nomenclatura` },
+      ]} />
       <Link href="/" className={styles.backLink}>← Inicio</Link>
 
       <header className={styles.header}>
